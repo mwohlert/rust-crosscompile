@@ -34,7 +34,7 @@ commands:
           docker build
           --build-arg DEBIAN_RELEASE=<< parameters.debian_release >>
           -t $DOCKER_USER/rust-base:<< parameters.debian_release >>
-          -f Dockerfile.base
+          -f Dockerfile.base .
 
       - run: docker push $DOCKER_USER/rust-base:<< parameters.debian_release >>
   
