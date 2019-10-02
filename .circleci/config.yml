@@ -43,7 +43,7 @@ jobs:
   rust-stable-stretch:
     <<: *docker_env
     steps:
-      - *setup
+      *setup
       - build_rust_container:
           target: "armv7hf-gnueabi"
     environment:
@@ -52,7 +52,7 @@ jobs:
   base-stretch:
     <<: *docker_env
     steps:
-      - *setup
+      *setup
       - build_base: 
           debian_release: "stretch"
 
