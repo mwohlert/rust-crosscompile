@@ -1,9 +1,13 @@
 version: 2.1
 
-setup_build_env: &setup_build_env
-  - checkout
-  - setup_remote_docker
-  - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+references:
+  docker_env: &docker_env
+    docker:
+      - image: docker:stable
+  setup: &setup
+    - checkout
+    - setup_remote_docker
+    - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
 
 commands:
   build_rust_container:
@@ -33,23 +37,22 @@ commands:
           Dockerfile.base
 
       - run: docker push $DOCKER_USER/rust-base:<< parameters.debian_release >>
+  
 
 jobs:
   rust-stable-stretch:
-    docker:
-      - image: docker:stable
+    <<: *docker_env
     steps:
-      <<: *setup_build_env
+      - *setup
       - build_rust_container:
           target: "armv7hf-gnueabi"
     environment:
       DEBIAN_RELEASE: stretch
       RUST_VERSION: 1.35.0
   base-stretch:
-    docker:
-      - image: docker:stable
+    <<: *docker_env
     steps:
-      <<: *setup_build_env
+      - *setup
       - build_base: 
           debian_release: "stretch"
 
