@@ -8,7 +8,6 @@ setup_build_env: &setup_build_env
     - checkout
     - setup_remote_docker
 
-
     - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
 
 commands:
@@ -43,13 +42,15 @@ commands:
 jobs:
   rust-stable-stretch:
     <<: *setup_build_env
-      - build_rust_container: "armv7hf-gnueabi"
+      - build_rust_container:
+          target: "armv7hf-gnueabi"
     environment:
       DEBIAN_RELEASE: stretch
       RUST_VERSION: 1.35.0
   base-stretch:
     <<: *setup_build_env
-      - build_base: "stretch"
+      - build_base: 
+          debian_release: "stretch"
 
 workflows:
   build:
