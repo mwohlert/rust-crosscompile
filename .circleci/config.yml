@@ -8,6 +8,9 @@ setup_build_env: &setup_build_env
     - checkout
     - setup_remote_docker
 
+
+    - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+
 commands:
   build_rust_container:
     description: "Command for building a rust cross compile docker image"
@@ -16,11 +19,11 @@ commands:
         type: string
     steps:
       - run: >-
-        docker build
-        --build-arg RUST_VERSION=$RUST_VERSION
-        --build-arg DEBIAN_RELEASE=$DEBIAN_RELEASE
-        -t $DOCKER_USER/rust-<< parameters.target >>:rust-$RUST_VERSION-$DEBIAN_RELEASE
-        << parameters.target >>
+          docker build
+          --build-arg RUST_VERSION=$RUST_VERSION
+          --build-arg DEBIAN_RELEASE=$DEBIAN_RELEASE
+          -t $DOCKER_USER/rust-<< parameters.target >>:rust-$RUST_VERSION-$DEBIAN_RELEASE
+          << parameters.target >>
 
       - run: docker push $DOCKER_USER/rust-<< parameters.target >>:rust-$RUST_VERSION
   build_base:
@@ -30,10 +33,10 @@ commands:
         type: string
     steps:
       - run: >-
-        docker build
-        --build-arg DEBIAN_RELEASE=<< parameters.debian_release >>
-        -t $DOCKER_USER/rust-base:<< parameters.debian_release >>
-        Dockerfile.base
+          docker build
+          --build-arg DEBIAN_RELEASE=<< parameters.debian_release >>
+          -t $DOCKER_USER/rust-base:<< parameters.debian_release >>
+          Dockerfile.base
 
       - run: docker push $DOCKER_USER/rust-base:<< parameters.debian_release >>
 
