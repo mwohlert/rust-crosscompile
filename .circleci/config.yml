@@ -1,0 +1,57 @@
+version: 2.1
+
+setup_build_env: &setup_build_env
+  docker:
+    - image: docker:stable
+
+  steps:
+    - checkout
+    - setup_remote_docker
+
+commands:
+  build_rust_container:
+    description: "Command for building a rust cross compile docker image"
+    parameters:
+      target:
+        type: string
+    steps:
+      - run: >-
+        docker build
+        --build-arg RUST_VERSION=$RUST_VERSION
+        --build-arg DEBIAN_RELEASE=$DEBIAN_RELEASE
+        -t $DOCKER_USER/rust-<< parameters.target >>:rust-$RUST_VERSION-$DEBIAN_RELEASE
+        << parameters.target >>
+
+      - run: docker push $DOCKER_USER/rust-<< parameters.target >>:rust-$RUST_VERSION
+  build_base:
+    description: "Build rust crosscompile base"
+    parameters:
+      debian_release:
+        type: string
+    steps:
+      - run: >-
+        docker build
+        --build-arg DEBIAN_RELEASE=<< parameters.debian_release >>
+        -t $DOCKER_USER/rust-base:<< parameters.debian_release >>
+        Dockerfile.base
+
+      - run: docker push $DOCKER_USER/rust-base:<< parameters.debian_release >>
+
+jobs:
+  rust-stable-stretch:
+    <<: *setup_build_env
+      - build_rust_container: "armv7hf-gnueabi"
+    environment:
+      DEBIAN_RELEASE: stretch
+      RUST_VERSION: 1.35.0
+  base-stretch:
+    <<: *setup_build_env
+      - build_base: "stretch"
+
+workflows:
+  build:
+    jobs:
+      - rust-stable-stretch:
+          requires:
+            - base-stretch
+      - base-stretch
