@@ -4,12 +4,15 @@ references:
   docker_env: &docker_env
     docker:
       - image: docker:stable
-  setup: &setup
+
+commands:
+  setup:
+    description: "General setup command"
+    steps:
     - checkout
     - setup_remote_docker
     - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
 
-commands:
   build_rust_container:
     description: "Command for building a rust cross compile docker image"
     parameters:
@@ -43,8 +46,7 @@ jobs:
   rust-stable-stretch:
     <<: *docker_env
     steps:
-      - checkout
-      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - setup
       - build_rust_container:
           target: "armv7hf-gnueabi"
     environment:
@@ -53,8 +55,7 @@ jobs:
   base-stretch:
     <<: *docker_env
     steps:
-      - checkout
-      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - setup
       - build_base: 
           debian_release: "stretch"
 
