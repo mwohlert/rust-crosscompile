@@ -51,7 +51,7 @@ jobs:
           target: "armv7hf-gnueabi"
     environment:
       DEBIAN_RELEASE: stretch
-      RUST_VERSION: 1.35.0
+      RUST_VERSION: 1.40.0
   base-stretch:
     <<: *docker_env
     steps:
