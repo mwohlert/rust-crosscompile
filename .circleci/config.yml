@@ -44,8 +44,6 @@ jobs:
     <<: *docker_env
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - build_rust_container:
           target: "armv7hf-gnueabi"
@@ -56,8 +54,6 @@ jobs:
     <<: *docker_env
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - build_base: 
           debian_release: "stretch"
