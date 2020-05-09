@@ -43,26 +43,26 @@ commands:
   
 
 jobs:
-  rust-stable-stretch:
+  rust-stable-debian:
     <<: *docker_env
     steps:
       - setup
       - build_rust_container:
           target: "armv7hf-gnueabi"
     environment:
-      DEBIAN_RELEASE: stretch
-      RUST_VERSION: 1.40.0
-  base-stretch:
+      DEBIAN_RELEASE: buster
+      RUST_VERSION: 1.43.1
+  base-debian:
     <<: *docker_env
     steps:
       - setup
       - build_base: 
-          debian_release: "stretch"
+          debian_release: "buster"
 
 workflows:
   build:
     jobs:
-      - rust-stable-stretch:
+      - rust-stable-debian:
           requires:
-            - base-stretch
-      - base-stretch
+            - base-debian
+      - base-debian
